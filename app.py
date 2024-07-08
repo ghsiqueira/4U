@@ -1,17 +1,15 @@
 from flask import Flask
-from pymongo import MongoClient
 from flask_login import LoginManager
 from flask_socketio import SocketIO
+from pymongo import MongoClient
+from config import Config
 
 app = Flask(__name__)
+app.config.from_object(Config)
 socketio = SocketIO(app)
 
-app.secret_key = 'your_secret_key'
-app.config['UPLOAD_FOLDER'] = 'static/uploads/'
-app.config['UPLOAD_FOLDER_COVER'] = 'static/uploads/cover/'
-
 # conexão com o MongoDB
-client = MongoClient("mongodb+srv://gbr:ghsiqueira@revista.ljczyc6.mongodb.net/?retryWrites=true&w=majority&appName=revista")
+client = MongoClient(Config.MONGO_URI)
 db = client['revista_online']
 users_collection = db['users']
 pdfs_collection = db['pdfs']
