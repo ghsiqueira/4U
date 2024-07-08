@@ -1,3 +1,6 @@
-static\uploads
-__pycache__
+static\uploads*.pdf
+static\uploads\cover*.jpg
+static\uploads\cover*.jpeg
+static\uploads\cover*.png
+__pycache__/
 .git
