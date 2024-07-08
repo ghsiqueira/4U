@@ -1,1 +1,3 @@
-/uploads/
+static\uploads
+_pycache_
+.git

@@ -17,7 +17,6 @@
                 }
             });
 
-            // Show alert messages for 5 seconds
             const alertMessage = document.getElementById('alert-message');
             if (alertMessage) {
                 setTimeout(() => {
@@ -25,7 +24,6 @@
                 }, 5000);
             }
 
-            // Toggle show more/less description
             document.querySelectorAll('.expand').forEach(element => {
                 element.addEventListener('click', (event) => {
                     const target = event.currentTarget;
@@ -64,12 +62,12 @@
             cursor: pointer;
         }
         .card-body {
-            height: 180px; /* Limit card body height */
+            height: 180px;
             overflow: hidden;
             position: relative;
         }
         .card-body p {
-            margin-bottom: 0; /* Remove default bottom margin of paragraphs */
+            margin-bottom: 0; 
         }
         .card-body .expand {
             cursor: pointer;
@@ -77,7 +75,7 @@
             margin-left: 5px;
         }
         .modal-dialog {
-            max-width: 90vw; /* Adjust modal max-width */
+            max-width: 90vw; 
         }
         .modal-content img {
             max-width: 100%;
@@ -159,7 +157,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Modal para imagem em tela cheia -->
+            <!-- Modal - imagem em tela cheia -->
             <div class="modal fade" id="imageModal-{{ pdf._id }}" tabindex="-1" aria-labelledby="imageModalLabel-{{ pdf._id }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">

@@ -1,16 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, send_file, jsonify
-from pymongo import MongoClient
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, redirect, url_for, send_from_directory, flash, send_file
+from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from flask_socketio import SocketIO, emit
-from app import app, login_manager, users_collection, pdfs_collection, db, socketio
-from forms import LoginForm, UploadForm, RegisterForm
-from models import User, PDF
+from app import app, login_manager, users_collection, pdfs_collection, socketio
+from forms import LoginForm, UploadForm
+from models import User
 import os
 from bson.objectid import ObjectId
 from datetime import datetime
-import json
 
 predefined_users = {
     "saude": "senha1",
@@ -165,7 +162,6 @@ def edit_pdf(pdf_id):
         flash('PDF atualizado com sucesso!', 'success')
         return redirect(url_for('index'))
     
-    # Preenche o formulário com os dados do PDF existente
     form.title.data = pdf['title']
     form.description.data = pdf['description']
     form.publish_date.data = pdf['publish_date']
