@@ -1,10 +1,16 @@
 # Ignorar PDFs na pasta uploads/
 /uploads/*.pdf
+static/uploads/*.pdf
 
 # Ignorar imagens de capa na pasta uploads/cover/
 /uploads/cover/*.jpg
 /uploads/cover/*.jpeg
 /uploads/cover/*.png
+static/uploads/cover/*.jpg
+static/uploads/cover/*.jpeg
+static/uploads/cover/*.png
+
+config.py
 
 __pycache__/
 .git
