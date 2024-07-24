@@ -42,6 +42,10 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
+    return render_template('index.html')
+
+@app.route('/revistas')
+def revistas():
     current_time = datetime.now()
     
     if current_user.is_authenticated:
@@ -51,7 +55,7 @@ def index():
             'publish_date': {'$lte': current_time}
         }))
     
-    return render_template('index.html', pdf_files=pdf_files)
+    return render_template('revistas.html', pdf_files=pdf_files)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -64,7 +68,7 @@ def login():
             user_obj = User(user['username'], str(user['_id']))
             login_user(user_obj)
             flash('Bem-vindo!')
-            return redirect(url_for('upload'))
+            return redirect(url_for('revistas'))
         else:
             flash('Nome de usuário ou senha incorretos!')
     return render_template('login.html', form=form)
@@ -99,7 +103,7 @@ def upload():
         result = pdfs_collection.insert_one(pdf_data)
 
         flash('Upload bem-sucedido! A revista será publicada em {}'.format(pdf_data['publish_date']))
-        return redirect(url_for('index'))
+        return redirect(url_for('revistas'))
     return render_template('upload.html', form=form)
 
 @app.route('/toggle_visibility/<pdf_id>', methods=['POST'])
@@ -108,10 +112,11 @@ def toggle_visibility(pdf_id):
     pdf = pdfs_collection.find_one({"_id": ObjectId(pdf_id)})
     if not pdf:
         flash('PDF não encontrado!', 'danger')
-        return redirect(url_for('index'))
+        return redirect(url_for('revistas'))
     
+    # Here you can add logic to toggle visibility if required
     flash('Visibilidade alterada com sucesso!', 'success')
-    return redirect(url_for('index'))
+    return redirect(url_for('revistas'))
 
 @app.route('/uploads/cover/<filename>')
 def uploaded_cover_file(filename):
@@ -127,7 +132,7 @@ def edit_pdf(pdf_id):
     pdf = pdfs_collection.find_one({"_id": ObjectId(pdf_id)})
     if not pdf:
         flash('PDF não encontrado!', 'danger')
-        return redirect(url_for('index'))
+        return redirect(url_for('revistas'))
     
     form = UploadForm()
     if form.validate_on_submit():
@@ -160,7 +165,7 @@ def edit_pdf(pdf_id):
         }})
 
         flash('PDF atualizado com sucesso!', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('revistas'))
     
     form.title.data = pdf['title']
     form.description.data = pdf['description']
@@ -178,7 +183,7 @@ def remove_pdf(pdf_id):
         flash('Revista removida com sucesso.')
     else:
         flash('Revista não encontrada.')
-    return redirect(url_for('index'))
+    return redirect(url_for('revistas'))
 
 @app.route('/logout')
 @login_required
@@ -198,7 +203,7 @@ def view_pdf(pdf_id):
     pdf = pdfs_collection.find_one({"_id": ObjectId(pdf_id)})
     if not pdf:
         flash('PDF não encontrado!', 'danger')
-        return redirect(url_for('index'))
+        return redirect(url_for('revistas'))
 
     pdfs_collection.update_one({"_id": ObjectId(pdf_id)}, {"$inc": {"views": 1}})
     socketio.emit('update_views', {'pdf_id': pdf_id, 'views': pdf['views'] + 1}, to='*')

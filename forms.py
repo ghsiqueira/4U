@@ -17,6 +17,6 @@ class UploadForm(FlaskForm):
     title = StringField('Título', validators=[DataRequired()])
     description = StringField('Descrição', validators=[DataRequired()])
     cover_image = FileField('Imagem de Capa', validators=[FileAllowed(['jpg', 'jpeg', 'png'], 'Imagens apenas!')])
-    file = FileField('PDF', validators=[FileRequired(), FileAllowed(['pdf'], 'PDFs only!')])
+    file = FileField('PDF', validators=[FileAllowed(['pdf'], 'PDFs apenas!')])
     publish_date = DateTimeLocalField('Data de Publicação', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])
     submit = SubmitField('Upload')

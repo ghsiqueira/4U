@@ -46,7 +46,7 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Publicações</a>
+                        <a class="nav-link" href="{{ url_for('revistas') }}">Revistas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
@@ -63,7 +63,7 @@
                         <h4 class="card-title mb-0">Upload de Revista</h4>
                     </div>
                     <div class="card-body">
-                        <form method="POST" enctype="multipart/form-data">
+                        <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
                             {{ form.hidden_tag() }}
                             <div class="mb-3">
                                 {{ form.title.label(class="form-label") }}
@@ -102,7 +102,7 @@
             const descriptionInput = document.getElementById('description');
             const descriptionAlert = document.getElementById('descriptionAlert');
             const submitBtn = document.getElementById('submitBtn');
-            const maxLength = 300;
+            const maxLength = 269;
 
             function checkDescriptionLength() {
                 const currentLength = descriptionInput.value.length;

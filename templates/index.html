@@ -1,102 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revista Online</title>
+    <title>Página Inicial - Revista Online</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const socket = io();
-            socket.on('update_views', data => {
-                const viewElement = document.getElementById(`views-${data.pdf_id}`);
-                if (viewElement) {
-                    viewElement.textContent = data.views;
-                }
-            });
-
-            const alertMessage = document.getElementById('alert-message');
-            if (alertMessage) {
-                setTimeout(() => {
-                    alertMessage.style.display = 'none';
-                }, 5000);
-            }
-
-            document.querySelectorAll('.expand').forEach(element => {
-                element.addEventListener('click', (event) => {
-                    const target = event.currentTarget;
-                    const cardText = target.closest('.card-body').querySelector('.card-text');
-                    const dots = cardText.querySelector('.dots');
-                    const moreText = cardText.querySelector('.more');
-                    const isExpanded = target.getAttribute('aria-expanded') === 'true';
-
-                    if (isExpanded) {
-                        target.innerHTML = '<i class="fas fa-chevron-down"></i>';
-                        dots.style.display = 'inline';
-                        moreText.style.display = 'none';
-                        target.setAttribute('aria-expanded', 'false');
-                    } else {
-                        target.innerHTML = '<i class="fas fa-chevron-up"></i>';
-                        dots.style.display = 'none';
-                        moreText.style.display = 'inline';
-                        target.setAttribute('aria-expanded', 'true');
-                    }
-                });
-            });
-        });
-    </script>
-    <style>
-        .navbar-brand {
-            font-weight: bold;
-        }
-        .card {
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            height: 100%;
-        }
-        .card-img-top {
-            max-height: 200px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-        .card-body {
-            height: 180px;
-            overflow: hidden;
-            position: relative;
-        }
-        .card-body p {
-            margin-bottom: 0; 
-        }
-        .card-body .expand {
-            cursor: pointer;
-            color: blue;
-            margin-left: 5px;
-        }
-        .modal-dialog {
-            max-width: 90vw; 
-        }
-        .modal-content img {
-            max-width: 100%;
-            height: auto;
-        }
-        .collapse {
-            margin-top: 10px;
-        }
-        .card-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Revista Online</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}">Revista Online</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('revistas') }}">Revistas</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('upload') }}">Upload</a>
                 </li>
@@ -112,70 +34,60 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        {% for message in get_flashed_messages() %}
-        <div id="alert-message" class="alert alert-info">{{ message }}</div>
-        {% endfor %}
-        <div class="row">
-            {% for pdf in pdf_files %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="{{ url_for('uploaded_cover_file', filename=pdf.cover_image) }}" alt="Imagem de Capa" data-bs-toggle="modal" data-bs-target="#imageModal-{{ pdf._id }}">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            {{ pdf.title }}
-                            {% if pdf.description|length > 100 %}
-                            <span class="expand text-primary" aria-expanded="false">
-                                <i class="fas fa-chevron-down"></i>
-                            </span>
-                            {% endif %}
-                        </h5>
-                        <p class="card-text">
-                            {% if pdf.description|length > 100 %}
-                            {{ pdf.description[:100] }}<span class="dots">...</span><span class="more" style="display:none">{{ pdf.description[100:] }}</span>
-                            {% else %}
-                            {{ pdf.description }}
-                            {% endif %}
-                        </p>
-                    </div>
-                    <div class="card-footer text-muted d-flex justify-content-between align-items-center">
-                        <div>
-                            Publicado em: {{ pdf.publish_date.strftime('%d/%m/%Y') }}<br>
-                            {% if current_user.is_authenticated %}
-                            Visualizações: <b id="views-{{ pdf._id }}">{{ pdf.views }}</b>
-                            {% endif %}
-                        </div>
-                        <div>
-                            <a href="{{ url_for('view_pdf', pdf_id=pdf._id) }}" class="btn btn-primary btn-sm" target="_blank">Ver PDF</a>
-                            {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('edit_pdf', pdf_id=pdf._id) }}" class="btn btn-warning btn-sm">Editar</a>
-                            <form action="{{ url_for('remove_pdf', pdf_id=pdf._id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir esta revista?');" class="d-inline">
-                                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                            </form>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal - imagem em tela cheia -->
-            <div class="modal fade" id="imageModal-{{ pdf._id }}" tabindex="-1" aria-labelledby="imageModalLabel-{{ pdf._id }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="imageModalLabel-{{ pdf._id }}">Imagem de Capa</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <img src="{{ url_for('uploaded_cover_file', filename=pdf.cover_image) }}" class="img-fluid" alt="Imagem de Capa">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+    <header class="bg-primary text-white text-center py-5">
+        <div class="container">
+            <h1 class="display-4">Bem-vindo à Revista Online!</h1>
+            <p class="lead">Explore as últimas edições, faça upload de novas revistas e muito mais.</p>
+            <a class="btn btn-light btn-lg" href="{{ url_for('revistas') }}">Veja as Revistas</a>
         </div>
-    </div>
+    </header>
+
+    <main class="container mt-4">
+        <section class="text-center">
+            <h2>Sobre Nós</h2>
+            <p>A Revista Online é sua fonte para as últimas publicações e notícias. Navegue pelas edições anteriores, descubra novos conteúdos e faça upload de suas próprias revistas.</p>
+        </section>
+
+        <section class="row mt-5">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='images/sample1.jpg') }}" class="card-img-top" alt="Imagem 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Edição Destaque</h5>
+                        <p class="card-text">Confira nossa edição destaque da semana.</p>
+                        <a href="{{ url_for('revistas') }}" class="btn btn-primary">Leia Agora</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='images/sample2.jpg') }}" class="card-img-top" alt="Imagem 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Novidades</h5>
+                        <p class="card-text">Veja as últimas novidades e atualizações.</p>
+                        <a href="{{ url_for('revistas') }}" class="btn btn-primary">Veja as Novidades</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='images/sample3.jpg') }}" class="card-img-top" alt="Imagem 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Participe</h5>
+                        <p class="card-text">Participe da nossa comunidade e envie suas revistas.</p>
+                        <a href="{{ url_for('upload') }}" class="btn btn-primary">Enviar Revista</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-light text-center py-4">
+        <div class="container">
+            <p>&copy; 2024 Revista Online. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 </body>
 </html>

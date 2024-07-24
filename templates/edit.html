@@ -45,6 +45,9 @@
         .navbar-brand {
             font-weight: bold;
         }
+        .alert {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -60,7 +63,7 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Publicações</a>
+                        <a class="nav-link" href="/">Revistas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
@@ -85,7 +88,8 @@
                             </div>
                             <div class="mb-3">
                                 {{ form.description.label(class="form-label") }}
-                                {{ form.description(class="form-control") }}
+                                {{ form.description(class="form-control", id="description") }}
+                                <div class="alert alert-danger mt-2" id="descriptionAlert"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="cover_image" class="form-label">Imagem de Capa:</label>
@@ -101,7 +105,7 @@
                                 {{ form.publish_date.label(class="form-label") }}
                                 {{ form.publish_date(class="form-control") }}
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
+                            <button type="submit" class="btn btn-primary w-100" id="submitBtn">Salvar Alterações</button>
                         </form>
                     </div>
                 </div>
@@ -124,7 +128,7 @@
         </div>
     </div>
 
-    <!-- Modal -  PDF em tela cheia -->
+    <!-- Modal - PDF em tela cheia -->
     <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
@@ -140,5 +144,30 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const descriptionInput = document.getElementById('description');
+            const descriptionAlert = document.getElementById('descriptionAlert');
+            const submitBtn = document.getElementById('submitBtn');
+            const maxLength = 269;
+
+            function checkDescriptionLength() {
+                const currentLength = descriptionInput.value.length;
+
+                if (currentLength > maxLength) {
+                    descriptionAlert.style.display = 'block';
+                    descriptionAlert.textContent = `Você ultrapassou o limite de ${maxLength} caracteres em ${currentLength - maxLength}. Por favor, remova ${currentLength - maxLength} caracteres.`;
+                    submitBtn.disabled = true;
+                } else {
+                    descriptionAlert.style.display = 'none';
+                    descriptionAlert.textContent = '';
+                    submitBtn.disabled = false;
+                }
+            }
+
+            descriptionInput.addEventListener('input', checkDescriptionLength);
+            checkDescriptionLength();
+        });
+    </script>
 </body>
 </html>
