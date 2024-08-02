@@ -6,7 +6,7 @@ from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # conexão com o MongoDB
 client = MongoClient(Config.MONGO_URI)
