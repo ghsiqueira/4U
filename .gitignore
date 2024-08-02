@@ -10,7 +10,7 @@ static/uploads/cover/*.jpg
 static/uploads/cover/*.jpeg
 static/uploads/cover/*.png
 
-config.py
+# config.py
 
 __pycache__/
 .git
