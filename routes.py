@@ -1,11 +1,11 @@
-from flask import Flask, render_template, redirect, url_for, send_from_directory, flash, send_file
+import os
+from flask import Flask, render_template, redirect, url_for, send_from_directory, flash, send_file, request
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from app import app, login_manager, users_collection, pdfs_collection, socketio
 from forms import LoginForm, UploadForm
 from models import User
-import os
 from bson.objectid import ObjectId
 from datetime import datetime
 
@@ -76,6 +76,12 @@ def login():
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
+    # Verifique se os diretórios de upload existem, caso contrário, crie-os
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+    if not os.path.exists(app.config['UPLOAD_FOLDER_COVER']):
+        os.makedirs(app.config['UPLOAD_FOLDER_COVER'])
+
     form = UploadForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -102,7 +108,7 @@ def upload():
 
         result = pdfs_collection.insert_one(pdf_data)
 
-        flash('Upload bem-sucedido! A revista será publicada em {}'.format(pdf_data['publish_date']))
+        flash(f'Upload bem-sucedido! A revista será publicada em {pdf_data["publish_date"]}')
         return redirect(url_for('revistas'))
     return render_template('upload.html', form=form)
 
@@ -114,7 +120,7 @@ def toggle_visibility(pdf_id):
         flash('PDF não encontrado!', 'danger')
         return redirect(url_for('revistas'))
     
-    # Here you can add logic to toggle visibility if required
+    # Aqui você pode adicionar a lógica para alternar a visibilidade, se necessário
     flash('Visibilidade alterada com sucesso!', 'success')
     return redirect(url_for('revistas'))
 
