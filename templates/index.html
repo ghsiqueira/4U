@@ -36,7 +36,7 @@
 
     <header class="bg-primary text-white text-center py-5">
         <div class="container">
-            <h1 class="display-4">Bem-vindo à Revista Online!</h1>
+            <h1 class="display-4">Bem-vindo à <strong>4U</strong>!</h1>
             <p class="lead">Explore as últimas edições, faça upload de novas revistas e muito mais.</p>
             <a class="btn btn-light btn-lg" href="{{ url_for('revistas') }}">Veja as Revistas</a>
         </div>
@@ -51,7 +51,7 @@
         <section class="row mt-5">
             <div class="col-md-4">
                 <div class="card">
-                    <img src="{{ url_for('static', filename='images/sample1.jpg') }}" class="card-img-top" alt="Imagem 1">
+                    <img src="../static/uploads/cover/img1.jpg" class="card-img-top" alt="Imagem 1" style="height: 350px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title">Edição Destaque</h5>
                         <p class="card-text">Confira nossa edição destaque da semana.</p>
@@ -61,7 +61,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card">
-                    <img src="{{ url_for('static', filename='images/sample2.jpg') }}" class="card-img-top" alt="Imagem 2">
+                    <img src="../static/uploads/cover/img2.jpg" class="card-img-top" alt="Imagem 2" style="height: 350px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title">Novidades</h5>
                         <p class="card-text">Veja as últimas novidades e atualizações.</p>
@@ -71,15 +71,15 @@
             </div>
             <div class="col-md-4">
                 <div class="card">
-                    <img src="{{ url_for('static', filename='images/sample3.jpg') }}" class="card-img-top" alt="Imagem 3">
+                    <img src="../static/uploads/cover/img3.jpg" class="card-img-top" alt="Imagem 3" style="height: 350px; object-fit: cover;">
                     <div class="card-body">
-                        <h5 class="card-title">Participe</h5>
-                        <p class="card-text">Participe da nossa comunidade e envie suas revistas.</p>
-                        <a href="{{ url_for('upload') }}" class="btn btn-primary">Enviar Revista</a>
+                        <h5 class="card-title">Teste</h5>
+                        <p class="card-text">TesteTesteTesteTesteTesteTesteTesteTesteTeste.</p>
+                        <a href="{{ url_for('revistas') }}" class="btn btn-primary">Teste Teste Teste</a>
                     </div>
                 </div>
             </div>
-        </section>
+        </section>        
     </main>
 
     <footer class="bg-light text-center py-4">
